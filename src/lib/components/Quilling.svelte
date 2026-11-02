@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { animate } from 'motion';
-	import { reducedMotion } from '$lib/stores/reducedMotion';
+	import { reducedMotion } from '#lib/stores/reducedMotion';
 
 	let root: HTMLElement | undefined = $state();
 	let played = $state(false);

@@ -1,10 +1,10 @@
 <script lang="ts">
-	import PrimitivesCard from '$lib/components/PrimitivesCard.svelte';
-	import MosaicNacre from '$lib/components/MosaicNacre.svelte';
-	import Quilling from '$lib/components/Quilling.svelte';
-	import OpArt from '$lib/components/OpArt.svelte';
-	import GlitchNeon from '$lib/components/GlitchNeon.svelte';
-	import CosmicFlows from '$lib/components/CosmicFlows.svelte';
+	import PrimitivesCard from '#lib/components/PrimitivesCard.svelte';
+	import MosaicNacre from '#lib/components/MosaicNacre.svelte';
+	import Quilling from '#lib/components/Quilling.svelte';
+	import OpArt from '#lib/components/OpArt.svelte';
+	import GlitchNeon from '#lib/components/GlitchNeon.svelte';
+	import CosmicFlows from '#lib/components/CosmicFlows.svelte';
 </script>
 
 <main class="min-h-screen bg-slate-950 px-6 py-10 text-white">

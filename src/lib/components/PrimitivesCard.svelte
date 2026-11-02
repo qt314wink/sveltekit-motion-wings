@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { animate, hover, press, type AnimationPlaybackControls } from 'motion';
-	import { reducedMotion } from '$lib/stores/reducedMotion';
+	import { reducedMotion } from '#lib/stores/reducedMotion';
 
 	let card: HTMLElement | undefined = $state();
 	let active: AnimationPlaybackControls | undefined;
