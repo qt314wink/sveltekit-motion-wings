@@ -30,7 +30,7 @@ try {
 	await evaluate('new Promise(r => setTimeout(r, 500))');
 	await Input.dispatchMouseEvent({ type: 'mouseMoved', x: 0, y: 0 });
 	await Input.dispatchMouseEvent({ type: 'mouseMoved', ...point });
-	await evaluate('new Promise(r => setTimeout(r, 600))');
+	await evaluate('new Promise(r => setTimeout(r, 45))');
 	assert.notEqual(
 		await evaluate("getComputedStyle(document.querySelector('article')).transform"),
 		'none',

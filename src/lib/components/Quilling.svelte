@@ -3,16 +3,21 @@
 	import { reducedMotion } from '#lib/stores/reducedMotion.js';
 
 	let root: HTMLElement | undefined = $state();
-	let played = $state(false);
+	let played = false;
 
 	$effect(() => {
 		if ($reducedMotion || !root || played) return;
-		animate(
-			root.querySelectorAll('[data-strip]'),
+		const nodes = root.querySelectorAll<HTMLElement>('[data-strip]');
+		const active = animate(
+			nodes,
 			{ y: [24, 0], opacity: [0, 1], rotate: [-4, 0] },
 			{ delay: (i) => i * 0.07, type: 'spring', stiffness: 260, damping: 18 }
 		);
 		played = true;
+		return () => {
+			active.cancel();
+			animate(nodes, { y: 0, rotate: 0, opacity: 1 }, { duration: 0 });
+		};
 	});
 </script>
 

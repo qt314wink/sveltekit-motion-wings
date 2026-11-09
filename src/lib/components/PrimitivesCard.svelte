@@ -26,10 +26,10 @@
 		return () => {
 			stopHover();
 			stopPress();
-			active?.stop();
+			active?.cancel();
 			active = undefined;
-			// stop() preserves the current frame; reduced motion needs the static pose.
-			el.style.removeProperty('transform');
+			// Reset Motion's cached values too, so pending renders keep the static pose.
+			animate(el, { x: 0, y: 0, scale: 1 }, { duration: 0 });
 		};
 	});
 </script>

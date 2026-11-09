@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { animate, hover } from 'motion';
+	import { animate, hover, type AnimationPlaybackControls } from 'motion';
 	import { reducedMotion } from '#lib/stores/reducedMotion.js';
 
 	let { word = 'CORRUPT' }: { word?: string } = $props();
@@ -11,9 +11,11 @@
 		void letters;
 		if ($reducedMotion || !row) return;
 		const el = row;
+		const nodes = [...el.querySelectorAll('[data-ch]')] as HTMLElement[];
+		let active: AnimationPlaybackControls[] = [];
 		const stop = hover(el, () => {
-			const nodes = [...el.querySelectorAll('[data-ch]')] as HTMLElement[];
-			nodes.forEach((c, i) =>
+			active.forEach((control) => control.stop());
+			active = nodes.map((c, i) =>
 				animate(
 					c,
 					{
@@ -24,10 +26,16 @@
 					{ duration: 0.28, delay: i * 0.02 }
 				)
 			);
-			return () =>
-				nodes.forEach((c) => animate(c, { x: 0, y: 0, filter: 'none' }, { duration: 0.15 }));
+			return () => {
+				active.forEach((control) => control.stop());
+				active = nodes.map((c) => animate(c, { x: 0, y: 0, filter: 'none' }, { duration: 0.15 }));
+			};
 		});
-		return () => stop();
+		return () => {
+			stop();
+			active.forEach((control) => control.cancel());
+			animate(nodes, { x: 0, y: 0, filter: 'none' }, { duration: 0 });
+		};
 	});
 </script>
 

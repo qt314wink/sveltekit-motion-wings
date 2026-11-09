@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { animate } from 'motion';
+	import { animate, type AnimationPlaybackControls } from 'motion';
 	import { reducedMotion } from '#lib/stores/reducedMotion.js';
 
 	let stage: HTMLElement | undefined = $state();
@@ -7,18 +7,29 @@
 	let near: HTMLElement | undefined = $state();
 
 	$effect(() => {
-		if ($reducedMotion || !stage) return;
+		if ($reducedMotion || !stage || !far || !near) return;
 		const el = stage;
+		const farLayer = far;
+		const nearLayer = near;
+		let active: AnimationPlaybackControls[] = [];
 		const onMove = (e: PointerEvent) => {
-			if (!el.isConnected || !far?.isConnected || !near?.isConnected) return;
+			if (!el.isConnected || !farLayer.isConnected || !nearLayer.isConnected) return;
 			const r = el.getBoundingClientRect();
+			if (!r.width || !r.height) return;
 			const x = (e.clientX - r.left) / r.width - 0.5;
 			const y = (e.clientY - r.top) / r.height - 0.5;
-			animate(far, { x: x * 8, y: y * 8 }, { duration: 0.4 });
-			animate(near, { x: x * 22, y: y * 22 }, { duration: 0.25 });
+			active.forEach((control) => control.stop());
+			active = [
+				animate(farLayer, { x: x * 8, y: y * 8 }, { duration: 0.4 }),
+				animate(nearLayer, { x: x * 22, y: y * 22 }, { duration: 0.25 })
+			];
 		};
 		el.addEventListener('pointermove', onMove);
-		return () => el.removeEventListener('pointermove', onMove);
+		return () => {
+			el.removeEventListener('pointermove', onMove);
+			active.forEach((control) => control.cancel());
+			animate([farLayer, nearLayer], { x: 0, y: 0 }, { duration: 0 });
+		};
 	});
 </script>
 

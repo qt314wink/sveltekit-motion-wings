@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { animate, hover } from 'motion';
+	import { animate, hover, type AnimationPlaybackControls } from 'motion';
 	import { reducedMotion } from '#lib/stores/reducedMotion.js';
 
 	let el: HTMLElement | undefined = $state();
@@ -7,12 +7,28 @@
 	$effect(() => {
 		if ($reducedMotion || !el) return;
 		const node = el;
+		let active: AnimationPlaybackControls | undefined;
 		const stop = hover(node, () => {
-			animate(node, { scale: 1.08, rotate: 2 }, { type: 'spring', stiffness: 180, damping: 16 });
-			return () =>
-				animate(node, { scale: 1, rotate: 0 }, { type: 'spring', stiffness: 220, damping: 20 });
+			active?.stop();
+			active = animate(
+				node,
+				{ scale: 1.08, rotate: 2 },
+				{ type: 'spring', stiffness: 180, damping: 16 }
+			);
+			return () => {
+				active?.stop();
+				active = animate(
+					node,
+					{ scale: 1, rotate: 0 },
+					{ type: 'spring', stiffness: 220, damping: 20 }
+				);
+			};
 		});
-		return () => stop();
+		return () => {
+			stop();
+			active?.cancel();
+			animate(node, { scale: 1, rotate: 0 }, { duration: 0 });
+		};
 	});
 </script>
 
