@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { animate, hover } from 'motion';
-	import { reducedMotion } from '#lib/stores/reducedMotion';
+	import { reducedMotion } from '#lib/stores/reducedMotion.js';
 
 	let el: HTMLElement | undefined = $state();
 

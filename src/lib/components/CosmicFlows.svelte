@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { animate } from 'motion';
-	import { reducedMotion } from '#lib/stores/reducedMotion';
+	import { reducedMotion } from '#lib/stores/reducedMotion.js';
 
 	let stage: HTMLElement | undefined = $state();
 	let far: HTMLElement | undefined = $state();
@@ -35,6 +35,6 @@
 	></div>
 	<div
 		bind:this={near}
-		class="absolute left-1/3 top-1/3 h-16 w-16 rounded-full bg-cyan-300/40 blur-md"
+		class="absolute top-1/3 left-1/3 h-16 w-16 rounded-full bg-cyan-300/40 blur-md"
 	></div>
 </div>

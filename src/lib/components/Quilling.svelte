@@ -1,6 +1,6 @@
 <script lang="ts">
 	import { animate } from 'motion';
-	import { reducedMotion } from '#lib/stores/reducedMotion';
+	import { reducedMotion } from '#lib/stores/reducedMotion.js';
 
 	let root: HTMLElement | undefined = $state();
 	let played = $state(false);
@@ -17,7 +17,7 @@
 </script>
 
 <div bind:this={root} class="flex gap-1" aria-label="Quilling strips">
-	{#each ['#f4a261', '#e76f51', '#2a9d8f', '#264653', '#e9c46a'] as c}
+	{#each ['#f4a261', '#e76f51', '#2a9d8f', '#264653', '#e9c46a'] as c (c)}
 		<span data-strip class="h-24 w-3 rounded-full" style="background:{c}"></span>
 	{/each}
 </div>
