@@ -1,9 +1,11 @@
 <script lang="ts">
-	import { animate, hover, press, type AnimationPlaybackControls } from 'motion';
+	import { animate, press, type AnimationPlaybackControls } from 'motion';
 	import { reducedMotion } from '#lib/stores/reducedMotion.js';
 
 	let card: HTMLElement | undefined = $state();
 	let active: AnimationPlaybackControls | undefined;
+	let trigger: HTMLButtonElement | undefined = $state();
+	let activations = $state(0);
 
 	function run(keyframes: Record<string, number>, options: Parameters<typeof animate>[2]) {
 		active?.stop();
@@ -13,22 +15,70 @@
 	}
 
 	$effect(() => {
-		if ($reducedMotion || !card) return;
+		if ($reducedMotion || !card || !trigger) return;
 		const el = card;
-		const stopHover = hover(el, () => {
-			run({ y: -6, scale: 1.02 }, { type: 'spring', stiffness: 280, damping: 22 });
-			return () => run({ y: 0, scale: 1 }, { type: 'spring', stiffness: 320, damping: 28 });
-		});
-		const stopPress = press(el, () => {
-			run({ scale: 0.98 }, { duration: 0.12 });
-			return () => run({ scale: 1.02 }, { duration: 0.18 });
+		const button = trigger;
+		let hovered = false;
+		let focused = false;
+		let pressed = false;
+		const update = () =>
+			run(
+				{ y: hovered || focused ? -6 : 0, scale: pressed ? 0.98 : hovered || focused ? 1.02 : 1 },
+				{ type: 'spring', stiffness: 320, damping: 28 }
+			);
+		const enter = () => {
+			hovered = true;
+			update();
+		};
+		const leave = () => {
+			hovered = false;
+			update();
+		};
+		const focus = () => {
+			focused = button.matches(':focus-visible');
+			update();
+		};
+		const blur = () => {
+			focused = false;
+			pressed = false;
+			update();
+		};
+		el.addEventListener('pointerenter', enter);
+		el.addEventListener('pointerleave', leave);
+		const keydown = (event: KeyboardEvent) => {
+			if (event.code === 'Space') {
+				pressed = true;
+				update();
+			}
+		};
+		const keyup = (event: KeyboardEvent) => {
+			if (event.code === 'Space') {
+				pressed = false;
+				update();
+			}
+		};
+		button.addEventListener('keydown', keydown);
+		button.addEventListener('keyup', keyup);
+		button.addEventListener('focus', focus);
+		button.addEventListener('blur', blur);
+		const stopPress = press(button, () => {
+			pressed = true;
+			update();
+			return () => {
+				pressed = false;
+				update();
+			};
 		});
 		return () => {
-			stopHover();
+			el.removeEventListener('pointerenter', enter);
+			el.removeEventListener('pointerleave', leave);
+			button.removeEventListener('keydown', keydown);
+			button.removeEventListener('keyup', keyup);
+			button.removeEventListener('focus', focus);
+			button.removeEventListener('blur', blur);
 			stopPress();
 			active?.cancel();
 			active = undefined;
-			// Reset Motion's cached values too, so pending renders keep the static pose.
 			animate(el, { x: 0, y: 0, scale: 1 }, { duration: 0 });
 		};
 	});
@@ -42,6 +92,19 @@
 	<p class="text-sm tracking-[0.2em] text-violet-200/80 uppercase">Primitives</p>
 	<h2 class="mt-2 text-xl text-white">Hover lift · press scale</h2>
 	<p class="mt-3 text-sm text-white/70">
-		{$reducedMotion ? 'Static card — reduced motion on.' : 'Hover lifts; press compresses.'}
+		{$reducedMotion
+			? 'Static card — reduced motion on.'
+			: 'Hover or focus lifts; press the button to compress.'}
+	</p>
+	<button
+		bind:this={trigger}
+		type="button"
+		onclick={() => (activations += 1)}
+		class="mt-4 rounded-lg border border-violet-300/50 px-4 py-2 text-sm text-violet-100 focus-visible:outline-2 focus-visible:outline-offset-4 focus-visible:outline-violet-200"
+	>
+		Try press interaction
+	</button>
+	<p class="mt-3 text-sm text-white/70" role="status">
+		{activations} activation{activations === 1 ? '' : 's'}
 	</p>
 </article>

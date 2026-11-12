@@ -27,3 +27,9 @@ For the next interaction slice, derive the primitive pose from hovered/pressed s
 Install dependencies with `npm ci`. Start `npm run dev` on port 5173 and a local Chromium instance with `--remote-debugging-port=9222`, then run `npm test`. The test controls that debugging instance and changes its media emulation. Use a dedicated test profile, not a personal browser session.
 
 Also run `npm run check`, `npm run lint` and `npm run build`. The browser regression was observed failing against the original card before implementation. The card test interrupts an active spring. The wing test checks all five other specimens and route teardown. Gesture events in the wing test are synthetic PointerEvents; the card test uses browser mouse input. Keyboard, touch-device and cross-browser coverage remain open.
+
+## Interaction gate
+
+The primitive card now has a native demonstration button with a visible activation count and focus outline. Pointer hover and keyboard focus share a derived pose; pressed state has priority. Release outside resolves from the current hover/focus state instead of forcing the hover scale. Space and Enter activate the button. Reduced motion keeps the button functional and the card static.
+
+`tests/card-interaction.mjs` uses Chromium mouse/key input to check release outside, keyboard compression, single activation for Space/Enter, and reduced-motion activation. Set `TEST_URL` to run it on a deployed preview. The Vercel project already follows the feature branch; preview access uses a deployment-specific share link rather than disabling project protection.

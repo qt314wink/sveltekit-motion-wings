@@ -21,7 +21,7 @@ try {
 	await Page.navigate({ url: 'http://localhost:5173/preview' });
 	await Page.loadEventFired();
 	await evaluate(`new Promise(resolve => {
- const ready = () => document.querySelector('article') && document.querySelector('article').textContent.includes('Hover lifts') ? resolve() : setTimeout(ready, 20);
+ const ready = () => document.querySelector('article') && document.querySelector('article').textContent.includes('Hover or focus lifts') ? resolve() : setTimeout(ready, 20);
  ready();
  })`);
 	const point = await evaluate(

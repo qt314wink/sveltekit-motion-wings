@@ -10,7 +10,8 @@
 <main class="min-h-screen bg-slate-950 px-6 py-10 text-white">
 	<h1 class="mb-2 text-2xl font-medium tracking-tight">Motion wings preview</h1>
 	<p class="mb-10 text-sm text-white/60">
-		Runtime gallery — display only, no component logic changes.
+		Hover the specimens, press the Op-Art ring, or use Tab and Enter / Space on the card button.
+		Change your device’s reduced-motion setting to verify the static fallback.
 	</p>
 
 	<div class="grid gap-10 md:grid-cols-2">
